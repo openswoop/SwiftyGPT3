@@ -1,6 +1,6 @@
 # SwiftyGPT3
 
-A simple Swift package to use with OpenAI's GPT-3 API.
+A simple Swift package which acts as an OpenAI client for GPT-3. **Supports GPT-3 Codex!**
 
 ## Requirements
 - iOS 10.0 or later
@@ -11,7 +11,9 @@ A simple Swift package to use with OpenAI's GPT-3 API.
 
 ## Installation
 Install this package with Swift Package Manager
-`https://github.com/heysaik/SwiftyGPT3.git`
+```
+https://github.com/heysaik/SwiftyGPT3.git
+```
   
 ## Usage
 ```swift
@@ -30,7 +32,7 @@ openai.performCompletions(
 }
 ```
 
-### Customizable Parameters:
+### Customizable Parameters
 | Parameter | Description |
 | --- | --- |
 | `prompt` | GPT-3 completes its answers based on the prompt you give. Learn more about designing a great prompt [here](https://beta.openai.com/docs/guides/completion/prompt-design). |
