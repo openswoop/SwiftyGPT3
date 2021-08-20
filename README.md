@@ -27,3 +27,6 @@ let result = try await openai.completion(prompt: "TEXT_PROMPT_HERE")
 - [ ] Classification Endpoint
 - [ ] Semantic Search Endpoint
 - [ ] Question-Answering Endpoint
+
+## Acknowledgements
+- [gpt_3_dart](https://github.com/boronhub/gpt_3_dart)
