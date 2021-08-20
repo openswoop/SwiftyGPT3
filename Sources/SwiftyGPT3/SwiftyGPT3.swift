@@ -2,7 +2,7 @@ import Foundation
 
 public struct SwiftyGPT3 {
     // Engines
-    enum Engine: String {
+    public enum Engine: String {
         // Base
         case davinci
         case curie
@@ -19,7 +19,7 @@ public struct SwiftyGPT3 {
     }
     
     // Initializer
-    var apiKey: String!
+    private var apiKey: String!
     public init(apiKey: String!) {
         self.apiKey = apiKey
     }
@@ -30,7 +30,7 @@ public struct SwiftyGPT3 {
     }
     
     // MARK: Completion Endpoint
-    func completion(
+    public func completion(
         prompt: String!,
         maxTokens: Int = 150,
         temperature: Double = 0.9,
@@ -60,12 +60,14 @@ public struct SwiftyGPT3 {
         
         // Return the text completion
         let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
+        print(json)
+        
         if let json = json,
            let choices = json["choices"] as? [[String: Any]],
            let completion = choices.first?["text"] as? String {
             return completion
         } else {
-            return "GPT-3 not get text completion"
+            return "GPT-3 could not get text completion"
         }
     }
     
