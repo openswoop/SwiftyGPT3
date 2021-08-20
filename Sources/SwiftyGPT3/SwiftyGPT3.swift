@@ -1,7 +1,7 @@
 import Foundation
 
 public struct SwiftyGPT3 {
-    
+    // Engines
     enum Engine: String {
         // Base
         case davinci
@@ -18,15 +18,18 @@ public struct SwiftyGPT3 {
         case cushmanCodex = "cushman-codex"
     }
     
+    // Initializer
     var apiKey: String!
     public init(apiKey: String!) {
         self.apiKey = apiKey
     }
     
+    // Base URL
     private func getURL(function: String, engine: Engine = .davinci) -> URL? {
         return URL(string: "https://api.openai.com/v1/engines/\(engine)/\(function)")
     }
     
+    // MARK: Completion Endpoint
     func completion(
         prompt: String!,
         maxTokens: Int = 150,
