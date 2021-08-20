@@ -1,4 +1,5 @@
 import Foundation
+import Alamofire
 
 public struct SwiftyGPT3 {
     // Engines
@@ -12,7 +13,7 @@ public struct SwiftyGPT3 {
         // Instruct
         case davinciInstructBeta = "davinci-instruct-beta"
         case curieInstructBeta = "curie-instruct-beta"
-
+        
         // Codex
         case davinciCodex = "davinci-codex"
         case cushmanCodex = "cushman-codex"
@@ -25,12 +26,12 @@ public struct SwiftyGPT3 {
     }
     
     // Base URL
-    private func getURL(function: String, engine: Engine = .davinci) -> URL? {
-        return URL(string: "https://api.openai.com/v1/engines/\(engine)/\(function)")
+    private func getURL(function: String, engine: Engine = .davinci) -> String {
+        return "https://api.openai.com/v1/engines/\(engine)/\(function)"
     }
     
     // MARK: Completion Endpoint
-    public func completion(
+    public func performCompletions(
         prompt: String!,
         maxTokens: Int = 150,
         temperature: Double = 0.9,
@@ -38,37 +39,50 @@ public struct SwiftyGPT3 {
         frequencePenalty: Double = 0,
         presencePenalty: Double = 0,
         bestOf: Int = 1,
-        engine: Engine = .davinci
-    ) async throws -> String {
+        engine: Engine = .davinci,
+        completionHandler: @escaping (Any?, AFError?) -> Void
+    ) {
         // Form a dictionary from the parameters
-        let parameters: [String: Any] = [:]
-        
+        let parameters: [String: Any] = [
+            "temperature": temperature,
+            "max_tokens": maxTokens,
+            "top_p": topP,
+            "best_of": bestOf,
+            "frequency_penalty": frequencePenalty,
+            "presence_penalty": presencePenalty
+        ]
         // Construct the request URL
-        guard let openAIUrl = getURL(function: "completions", engine: engine),
-              let payload = try? JSONSerialization.data(withJSONObject: parameters) else {
-                  return "Please make sure you are using valid parameters"
-              }
+        let openAIUrl = getURL(function: "completions", engine: engine)
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(self.apiKey!)",
+            "Contet-Type": "application/json"
+        ]
         
-        var request = URLRequest(url: openAIUrl)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("Bearer \(self.apiKey!)", forHTTPHeaderField: "Authorization")
-        request.httpBody = payload
-        
-        // Async function to make a call to OpenAI
-        let (data, _) = try await URLSession.shared.data(from: openAIUrl)
-        
-        // Return the text completion
-        let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
-        print(json)
-        
-        if let json = json,
-           let choices = json["choices"] as? [[String: Any]],
-           let completion = choices.first?["text"] as? String {
-            return completion
-        } else {
-            return "GPT-3 could not get text completion"
-        }
+        AF
+            .request(openAIUrl, method: .post, parameters: parameters, headers: headers)
+            .response { response in
+                
+                switch response.result {
+                case .success(let value):
+                    
+                    if let data = value {
+                        let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
+                        
+                        // Return the text completion
+                        if let json = json,
+                           let choices = json["choices"] as? [[String: Any]],
+                           let completionsResponse = choices.first?["text"] as? String {
+                            completionHandler(completionsResponse, nil)
+                        } else {
+                            completionHandler("GPT-3 could not get text completion", nil)
+                        }
+                    }
+                    
+                case .failure(let error):
+                    completionHandler(nil, error)
+                }
+            
+            }
     }
     
     // TODO: Other OpenAI Endpoints
