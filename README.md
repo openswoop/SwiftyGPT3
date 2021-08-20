@@ -1,6 +1,6 @@
 # SwiftyGPT3
 
-A simple Swift package which acts as an OpenAI client for GPT-3. **Supports GPT-3 Codex!**
+A simple Swift package which acts as an OpenAI client for GPT-3 brought to you by the [Airgift Crew](https://airgift.app/). **Supports GPT-3 Codex!**
 
 ## Requirements
 - iOS 10.0 or later
