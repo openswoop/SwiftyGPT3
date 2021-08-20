@@ -3,16 +3,21 @@ import XCTest
 
 final class SwiftyGPT3Tests: XCTestCase {
     func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        
-        let openai = SwiftyGPT3(apiKey: "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")
+        let openai = SwiftyGPT3(apiKey: "YOUR-OPENAI-KEY")
+        let e = expectation(description: "Alamofire")
+
         openai.performCompletions(
-            prompt: "user: hello\nbot: Hi! How can I help you today?\nuser:Tell me a joke\nbot:",
+            prompt: "User: Hi AI!\nAI: Hello! What can I help you with?\nUser: Can you please tell me what the weather is?",
+            maxTokens: 60,
+            stopSequences: ["User:"],
             engine: .davinci
         ) { result, error in
-            XCTAssertNotNil(result)
+            if let response = result {
+                print(response)
+            }
+            e.fulfill()
         }
+        
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 }
