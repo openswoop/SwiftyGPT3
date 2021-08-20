@@ -1,3 +1,3 @@
-# Swifty GPT-3
+# SwiftyGPT3
 
-A description of this package.
+This package is a Swift wrapper for OpenAI's GPT-3 API.
