@@ -5,11 +5,11 @@ public struct SwiftyGPT3 {
     // Engines
     public enum Engine: String {
         // Base
-        case davinci
+        case davinci = "text-davinci-002"
         case curie
         case babbage
         case ada
-        
+
         // Instruct
         case davinciInstructBeta = "davinci-instruct-beta"
         case curieInstructBeta = "curie-instruct-beta"
@@ -34,12 +34,10 @@ public struct SwiftyGPT3 {
     public func performCompletions(
         prompt: String!,
         maxTokens: Int = 60,
-        temperature: Double = 0.9,
+        temperature: Double = 0,
         topP: Double = 1.0,
         frequencePenalty: Double = 0,
         presencePenalty: Double = 0,
-        bestOf: Int = 1,
-        stopSequences: [String] = [],
         engine: Engine = .davinci,
         completionHandler: @escaping (Any?, AFError?) -> Void
     ) {
@@ -48,10 +46,8 @@ public struct SwiftyGPT3 {
             "temperature": temperature,
             "max_tokens": maxTokens,
             "top_p": topP,
-            "best_of": bestOf,
             "frequency_penalty": frequencePenalty,
             "presence_penalty": presencePenalty,
-            "stop": stopSequences
         ]
         
         // Construct the URL Request
@@ -62,20 +58,18 @@ public struct SwiftyGPT3 {
         ]
         
         // Perform the request
+        
         AF
             .request(openAIUrl, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
-            .responseJSON { response in
-                if let data = response.data {
-                    let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
-                    // Return the text completion
-                    if let json = json,
-                       let choices = json["choices"] as? [[String: Any]],
-                       let completionsResponse = choices.first?["text"] as? String {
-                        completionHandler(completionsResponse, nil)
-                    } else {
-                        completionHandler("GPT-3 could not get text completion", nil)
+            .responseDecodable(of: CompletionData.self) { response in
+                print(String(data: response.data ?? Data(), encoding: .utf8))
+                    do {
+                        completionHandler(try response.result.get().choices.first?.text ?? "", nil)
+                    } catch {
+                        print(error)
+                        completionHandler(nil, nil)
                     }
-                }
+    
             }
     }
     
