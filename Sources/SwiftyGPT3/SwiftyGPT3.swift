@@ -53,7 +53,7 @@ public struct SwiftyGPT3 {
             request.headers = headers
             
             let response = try await session.upload(for: request, from: JSONEncoder().encode(parameters))
-            print(String(data: response.0 ?? Data(), encoding: .utf8))
+            
             let completion = try JSONDecoder().decode(CompletionData.self, from: response.0)
             return completion.choices.first?.text ?? ""
             
