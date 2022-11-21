@@ -28,3 +28,11 @@ struct Usage: Codable {
     var total_tokens: Int?
 
 }
+struct CompletionInput: Codable {
+    var prompt: String
+    var temperature: Double
+    var max_tokens: Double
+    var top_p: Double
+    var frequency_penalty: Double
+    var presence_penalty: Double
+}

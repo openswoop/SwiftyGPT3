@@ -6,10 +6,8 @@ import PackageDescription
 let package = Package(
     name: "SwiftyGPT3",
     platforms: [
-        .macOS(.v10_12),
-        .iOS(.v10),
-        .watchOS(.v3),
-        .tvOS(.v10)
+        .iOS(.v13),
+       
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
