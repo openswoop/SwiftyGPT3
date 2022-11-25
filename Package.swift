@@ -7,6 +7,7 @@ let package = Package(
     name: "SwiftyGPT3",
     platforms: [
         .iOS(.v13),
+        .macOS(.v12)
        
     ],
     products: [
