@@ -5,7 +5,7 @@ public struct SwiftyGPT3 {
     // Engines
     public enum Engine: String {
         // Base
-        case davinci = "text-davinci-002"
+        case davinci = "text-davinci-003"
         case curie
         case babbage
         case ada
@@ -53,7 +53,6 @@ public struct SwiftyGPT3 {
             request.headers = headers
             
             let response = try await session.upload(for: request, from: JSONEncoder().encode(parameters))
-            
             let completion = try JSONDecoder().decode(CompletionData.self, from: response.0)
             return completion.choices.first?.text ?? ""
             

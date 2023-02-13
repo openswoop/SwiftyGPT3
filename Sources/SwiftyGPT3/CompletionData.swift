@@ -8,8 +8,8 @@
 import Foundation
 
 struct CompletionData: Codable {
-    var id: String
-    var object: String
+    var id: String?
+    var object: String?
     var choices: [Choices]
     var created: Double
     var model: String
