@@ -5,6 +5,7 @@ public struct SwiftyGPT3 {
     // Engines
     public enum Engine: String {
         // Base
+        case chat = "gpt-3.5-turbo"
         case davinci = "text-davinci-002"
         case davinci3 = "text-davinci-003"
         case curie
